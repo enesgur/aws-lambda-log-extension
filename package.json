@@ -1,0 +1,9 @@
+{
+  "name": "aws-lambda-log-extension",
+  "description": "Log Extension for AWS Lambda",
+  "version": "0.1.0",
+  "devDependencies": {
+    "serverless": "^2.68.0",
+    "serverless-deployment-bucket": "^1.5.1"
+  }
+}

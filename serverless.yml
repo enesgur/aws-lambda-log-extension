@@ -1,0 +1,47 @@
+service: aws-lambda-log-extension
+
+plugins:
+  - serverless-deployment-bucket
+
+custom:
+  stages:
+    - prod
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  stage: ${opt:stage, 'local'}
+  region: us-east-1
+  deploymentBucket:
+    name: ${self:service}-${opt:stage}-deployment-bucket
+
+layers:
+  extension:
+    path: extensions
+    compatibleRuntimes:
+      - nodejs14.x
+    compatibleArchitectures:
+      - x86_64
+      - arm64
+    retain: false
+
+functions:
+  consumer:
+    name: Test-Consumer
+    handler: handler.handle
+    memorySize: 128
+    timeout: 90
+    environment:
+      S3_BUCKET_NAME: test-consumer
+    events:
+      - http:
+          path: /info
+          method: get
+    layers:
+      - { Ref: ExtensionLambdaLayer }
+
+package:
+  exclude:
+    - ./node_modules/**
+    - ./.serverless/**
+
